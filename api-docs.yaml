@@ -1,0 +1,265 @@
+openapi: 3.1.0
+info:
+  title: FinEdge Ledger API
+  description: "Backend demo in-memory per gestione clienti, conti e movimenti"
+  version: 0.1.0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/transactions/{accountId}/debit:
+    post:
+      tags:
+      - Transactions
+      operationId: debit
+      parameters:
+      - name: accountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: amount
+        in: query
+        required: true
+        schema:
+          type: number
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TransactionDTO"
+  /api/transactions/{accountId}/credit:
+    post:
+      tags:
+      - Transactions
+      operationId: credit
+      parameters:
+      - name: accountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: amount
+        in: query
+        required: true
+        schema:
+          type: number
+      - name: description
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TransactionDTO"
+  /api/customers:
+    get:
+      tags:
+      - Customers
+      operationId: list
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomerDTO"
+    post:
+      tags:
+      - Customers
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomerDTO"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CustomerDTO"
+  /api/accounts:
+    post:
+      tags:
+      - Accounts
+      operationId: open
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAccountDTO"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AccountDTO"
+  /api/transactions/{accountId}:
+    get:
+      tags:
+      - Transactions
+      operationId: list_1
+      parameters:
+      - name: accountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransactionDTO"
+  /api/customers/{id}:
+    get:
+      tags:
+      - Customers
+      operationId: get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CustomerDTO"
+  /api/accounts/{id}:
+    get:
+      tags:
+      - Accounts
+      operationId: get_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AccountDTO"
+  /api/accounts/by-customer/{customerId}:
+    get:
+      tags:
+      - Accounts
+      operationId: listByCustomer
+      parameters:
+      - name: customerId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountDTO"
+components:
+  schemas:
+    TransactionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+        type:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+    CreateCustomerDTO:
+      type: object
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+        email:
+          type: string
+        fiscalCode:
+          type: string
+          pattern: "\\w{16}"
+      required:
+      - fullName
+    CustomerDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fullName:
+          type: string
+        email:
+          type: string
+        fiscalCode:
+          type: string
+    CreateAccountDTO:
+      type: object
+      properties:
+        customerId:
+          type: string
+          format: uuid
+        iban:
+          type: string
+          minLength: 1
+      required:
+      - customerId
+      - iban
+    AccountDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        iban:
+          type: string
+        balance:
+          type: number
+        customerId:
+          type: string
+          format: uuid
