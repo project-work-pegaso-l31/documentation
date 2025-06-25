@@ -51,25 +51,29 @@ L’MVP deve sostituire gli attuali fogli Excel con **API REST** documentate (Sw
 
 ### 5. User stories & criteri di accettazione
 
-| Story      | Descrizione                                                          | Criteri (“Done When…”)                                                                                                                  |
-| ---------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| **US-001** | _Come operatore_ voglio aggiungere un cliente con nome, e-mail e CF. | • Bottoni “+ Cliente” abilitati solo se tutti i campi sono pieni.<br>• Input errato mostra alert “e-mail non valida” / “CF non valido”. |
-| **US-002** | …voglio creare un nuovo conto per un cliente selezionato.            | • Click “+ Conto” genera IBAN e saldo 0.<br>• Nuovo conto appare nella colonna conti senza refresh pagina.                              |
-| **US-003** | …voglio registrare un addebito.                                      | • Se importo > saldo ricevo “Saldo insufficiente”.<br>• Se ok, tabella movimenti si aggiorna e saldo diminu­isce live.                  |
-| **US-004** | …voglio cercare cliente per CF.                                      | • Se stringa < 16 car o regex fail → alert “Inserire CF completo o valido”.<br>• Se trovato, vengono mostrati anagrafica & conti.       |
-| **US-005** | _Come manager_ voglio esportare la definizione API.                  | • `GET /v3/api-docs.yaml` restituisce YAML valido (lint OK).                                                                            |
+| Story      | Descrizione                                                                                                                                                         | Criteri (“Done When…”)                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **US-001** | _Come operatore_ voglio aggiungere un cliente con nome, e-mail e CF.                                                                                                | • Bottoni “+ Cliente” abilitati solo se tutti i campi sono pieni.<br>• Input errato mostra alert “e-mail non valida” / “CF non valido”. |
+| **US-002** | …voglio creare un nuovo conto per un cliente selezionato.                                                                                                           | • Click “+ Conto” genera IBAN e saldo 0.<br>• Nuovo conto appare nella colonna conti senza refresh pagina.                              |
+| **US-003** | …voglio registrare un addebito.                                                                                                                                     | • Se importo > saldo ricevo “Saldo insufficiente”.<br>• Se ok, tabella movimenti si aggiorna e saldo diminu­isce live.                  |
+| **US-004** | …voglio cercare cliente per CF.                                                                                                                                     | • Se stringa < 16 car o regex fail → alert “Inserire CF completo o valido”.<br>• Se trovato, vengono mostrati anagrafica & conti.       |
+| **US-005** | _Come manager_ voglio esportare la definizione API.                                                                                                                 | • `GET /v3/api-docs.yaml` restituisce YAML valido (lint OK).                                                                            |
+| **US-006** | _Come operatore_ voglio poter aggiornare i dati anagrafici di un cliente da UI, con gli stessi controlli di creazione, così da correggerli senza crearne uno nuovo. | • Se la stringa è < 16 car. o non rispetta la regex, mostra alert “Inserire CF completo o valido.                                       |
+
+• Se esiste, carica anagrafica + conti nelle rispettive sezioni.
 
 ---
 
 ### 6. Requisiti non funzionali chiave
 
-| Codice        | Requisito                                                                      |
-| ------------- | ------------------------------------------------------------------------------ |
-| **NF-SEC-1**  | CORS limitato a `http://localhost:5173`.                                       |
-| **NF-PERF-1** | Tempo risposta medio API (in-mem) < 150 ms.                                    |
-| **NF-UX-1**   | UI responsive ≥ 1280 → 768 px; scrollbar auto quando elenco supera 300 px h.   |
-| **NF-OPS-1**  | Build Maven eseguibile con `mvn clean package`; front-end con `npm run build`. |
-| **NF-TEST-1** | Copertura > 80 % sui servizi Java (JUnit + Mockito).                           |
+| Codice        | Requisito                                                                                                |
+| ------------- | -------------------------------------------------------------------------------------------------------- |
+| **NF-SEC-1**  | CORS limitato a `http://localhost:5173`.                                                                 |
+| **NF-PERF-1** | Tempo risposta medio API (in-mem) < 150 ms.                                                              |
+| **NF-UX-1**   | UI responsive ≥ 1280 → 768 px; scrollbar auto quando elenco supera 300 px h.                             |
+| **NF-OPS-1**  | Build Maven eseguibile con `mvn clean package`; front-end con `npm run build`.                           |
+| **NF-TEST-1** | Copertura > 80 % sui servizi Java (JUnit + Mockito).                                                     |
+| **NF-TEST-2** | Richiesta di messaggi d’errore specifici (409 con body parlante) per duplicati di e-mail o CF.</li></ul> |
 
 ---
 

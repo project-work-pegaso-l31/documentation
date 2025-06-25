@@ -7,13 +7,104 @@ servers:
 - url: http://localhost:8080
   description: Generated server url
 paths:
-  /api/transactions/{accountId}/debit:
+  /api/customers/{id}:
+    get:
+      tags:
+      - customer-controller
+      operationId: get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CustomerDTO"
+    put:
+      tags:
+      - customer-controller
+      operationId: update
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCustomerDTO"
+        required: true
+      responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CustomerDTO"
+  /api/transactions/{accId}/debit:
     post:
       tags:
       - Transactions
       operationId: debit
       parameters:
-      - name: accountId
+      - name: accId
         in: path
         required: true
         schema:
@@ -24,13 +115,20 @@ paths:
         required: true
         schema:
           type: number
-          exclusiveMinimum: 0
       - name: description
         in: query
         required: false
         schema:
           type: string
       responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "404":
           description: Not Found
           content:
@@ -47,19 +145,19 @@ paths:
                 type: object
                 additionalProperties:
                   type: string
-        "201":
-          description: Created
+        "200":
+          description: OK
           content:
             '*/*':
               schema:
                 $ref: "#/components/schemas/TransactionDTO"
-  /api/transactions/{accountId}/credit:
+  /api/transactions/{accId}/credit:
     post:
       tags:
       - Transactions
       operationId: credit
       parameters:
-      - name: accountId
+      - name: accId
         in: path
         required: true
         schema:
@@ -70,13 +168,20 @@ paths:
         required: true
         schema:
           type: number
-          exclusiveMinimum: 0
       - name: description
         in: query
         required: false
         schema:
           type: string
       responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "404":
           description: Not Found
           content:
@@ -93,8 +198,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: string
-        "201":
-          description: Created
+        "200":
+          description: OK
           content:
             '*/*':
               schema:
@@ -102,9 +207,17 @@ paths:
   /api/customers:
     get:
       tags:
-      - Customers
+      - customer-controller
       operationId: list
       responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "404":
           description: Not Found
           content:
@@ -128,10 +241,10 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Customer"
+                  $ref: "#/components/schemas/CustomerDTO"
     post:
       tags:
-      - Customers
+      - customer-controller
       operationId: create
       requestBody:
         content:
@@ -140,6 +253,14 @@ paths:
               $ref: "#/components/schemas/CreateCustomerDTO"
         required: true
       responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "404":
           description: Not Found
           content:
@@ -161,7 +282,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Customer"
+                $ref: "#/components/schemas/CustomerDTO"
   /api/accounts:
     post:
       tags:
@@ -174,6 +295,14 @@ paths:
               $ref: "#/components/schemas/CreateAccountDTO"
         required: true
       responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "404":
           description: Not Found
           content:
@@ -196,19 +325,27 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/AccountDTO"
-  /api/transactions/{accountId}:
+  /api/transactions/{accId}:
     get:
       tags:
       - Transactions
       operationId: list_1
       parameters:
-      - name: accountId
+      - name: accId
         in: path
         required: true
         schema:
           type: string
           format: uuid
       responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "404":
           description: Not Found
           content:
@@ -233,46 +370,11 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/TransactionDTO"
-  /api/customers/{id}:
-    get:
-      tags:
-      - Customers
-      operationId: get
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: string
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: string
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/Customer"
   /api/customers/by-fiscalCode:
     get:
       tags:
-      - Customers
-      operationId: getByFiscalCode
+      - customer-controller
+      operationId: byCfQuery
       parameters:
       - name: cf
         in: query
@@ -280,6 +382,14 @@ paths:
         schema:
           type: string
       responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "404":
           description: Not Found
           content:
@@ -301,7 +411,49 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Customer"
+                $ref: "#/components/schemas/CustomerDTO"
+  /api/customers/by-fiscalCode/{cf}:
+    get:
+      tags:
+      - customer-controller
+      operationId: byCfPath
+      parameters:
+      - name: cf
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CustomerDTO"
   /api/accounts/{id}:
     get:
       tags:
@@ -315,6 +467,14 @@ paths:
           type: string
           format: uuid
       responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "404":
           description: Not Found
           content:
@@ -350,6 +510,14 @@ paths:
           type: string
           format: uuid
       responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "404":
           description: Not Found
           content:
@@ -376,6 +544,31 @@ paths:
                   $ref: "#/components/schemas/AccountDTO"
 components:
   schemas:
+    UpdateCustomerDTO:
+      type: object
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+        email:
+          type: string
+        fiscalCode:
+          type: string
+          pattern: "^[A-Z]{6}[0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$"
+      required:
+      - fullName
+    CustomerDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fullName:
+          type: string
+        email:
+          type: string
+        fiscalCode:
+          type: string
     TransactionDTO:
       type: object
       properties:
@@ -406,18 +599,6 @@ components:
           pattern: "^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]$"
       required:
       - fullName
-    Customer:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        fullName:
-          type: string
-        email:
-          type: string
-        fiscalCode:
-          type: string
     CreateAccountDTO:
       type: object
       properties:
