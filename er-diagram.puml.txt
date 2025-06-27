@@ -1,0 +1,31 @@
+@startuml
+!define Table(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define PK(field) <u>field</u>
+!define FK(field) <i>field</i>
+
+Table(Customer, "CUSTOMER") {
+  PK(id) : UUID
+  fullName : String
+  email : String
+  fiscalCode : String
+}
+
+Table(Account, "ACCOUNT") {
+  PK(id) : UUID
+  iban : String
+  balance : Decimal
+  FK(customerId) : UUID
+}
+
+Table(Transaction, "TRANSACTION") {
+  PK(id) : UUID
+  FK(accountId) : UUID
+  amount : Decimal
+  type : Enum
+  description : String
+  createdAt : Timestamp
+}
+
+Customer ||--o{ Account : "1 .. n"
+Account  ||--o{ Transaction : "1 .. n"
+@enduml

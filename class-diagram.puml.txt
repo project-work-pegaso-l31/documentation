@@ -1,0 +1,32 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Customer {
+  +UUID id
+  +String fullName
+  +String email
+  +String fiscalCode
+}
+
+class Account {
+  +UUID id
+  +String iban
+  +BigDecimal balance
+}
+
+class Transaction {
+  +UUID id
+  +BigDecimal amount
+  +TransactionType type
+  +String description
+  +LocalDateTime createdAt
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+Customer "1" -- "0..*" Account : possiede >
+Account  "1" -- "0..*" Transaction : registra >
+@enduml
